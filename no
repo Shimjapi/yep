@@ -1,0 +1,64 @@
+local EnvBackup=getfenv()
+local Done = false
+local Env=setmetatable({},{__index=function(self,key)
+    if Done then return EnvBackup[key] end
+    if key == "game" then 
+        return setmetatable({},{__index=function(self,key)
+            if key == "GetService" then
+                return function(self,service)
+                    if service == "Players" then
+                        return setmetatable({},{__index=function(s,k)
+                            if k == "LocalPlayer" then
+                                return setmetatable({},{__index=function(self,key)
+                                    if key == "UserId" then
+                                        return 24158945
+                                    end
+                                    if key == "Name" then
+                                        return "Scottish"    
+                                    end
+                                    if type(game.Players.LocalPlayer[key]) == "function" then
+                                        return function(...)
+                                            return game.Players.LocalPlayer[key](game.Players.LocalPlayer,...)
+                                        end
+                                    end
+                                    return game.Players.LocalPlayer[key]
+                                end})
+                            end
+                        end})
+                    end
+                    return game:GetService(service)
+                end
+            end
+            return game[key]
+        end})
+    end
+    return EnvBackup[key]
+end,__newindex=function(self,key,value)
+    if key == "Notify" then
+        local t = value
+        value=function(Top,Middle,Time,...)
+            if Middle:lower():find("join") then
+                t("","Copied discord to clipboard")
+                setclipboard("https://discord.gg/KjXVdRhz")
+                return
+            end
+            if Middle:lower():find("load") then
+                if not done then
+                    Done=true
+                else
+                    return
+                end
+            end
+            return t(Top,Middle,Time,...)
+        end
+    end
+    if key == "IdMatch" then
+        value = function(...)
+            return true
+        end
+    end
+    EnvBackup[key]=value
+end})
+local getfenv=function()
+    return Env
+end
