@@ -11,10 +11,10 @@ local Env=setmetatable({},{__index=function(self,key)
                             if k == "LocalPlayer" then
                                 return setmetatable({},{__index=function(self,key)
                                     if key == "UserId" then
-                                        return 24158945
+                                        return 2706033632
                                     end
                                     if key == "Name" then
-                                        return "Scottish"    
+                                        return "TickOfAClockV"    
                                     end
                                     if type(game.Players.LocalPlayer[key]) == "function" then
                                         return function(...)
